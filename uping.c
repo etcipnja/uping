@@ -11,7 +11,7 @@
 //	-i <interval> - interval in sec (-i.1 - send every 100ms)
 //	-s <size> - packet size in bytes
 //	-q - quiet mode
-//you can send SIGUSR1 to get the statsistic for the last interval
+//you can send SIGUSR1 to get the statistic for the last interval
 
 
 #include <errno.h>
