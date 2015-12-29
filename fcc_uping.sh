@@ -103,7 +103,17 @@ function initialize()
 
 #main
 #-------------------------------------------------------------------------------
-initialize
+while true
+do
+	initialize
+	if [ ${#SITES[@]} == 0 ]; then
+                echo Unable to read configuration, cooldown 30sec ...
+                sleep 30
+	else
+		break
+        fi
+done
+
 while true
 do
 	for (( v=0; v<$INTERVAL; v++ ));
