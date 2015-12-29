@@ -1,12 +1,15 @@
 #!/bin/bash
 
+#interval in seconds between datacollections
 INTERVAL=5
+#port to be used for ping server and client
 SERVER_PORT=7
+
 UPING="./uping.x"
 UPING_OPT="-i.05 -q"
 TEMP_DIR=/tmp/uping
 
-
+#customize this function to save stats in zabbix
 #-------------------------------------------------------------------------------
 function save_stats() 
 {
@@ -21,8 +24,8 @@ function save_stats()
 }
 
 #-------------------------------------------------------------------------------
-# checks if uping app is runing (arguments passed in $1) and starts if necessary
-# uping outputs reults to /tmp/uping/<LOCATION>
+# checks if uping app is runing and starts if necessary
+# uping outputs results into /tmp/uping/<LOCATION>
 function check_client() 
 {
 	CLIENT_LOC=`echo $1 | cut -f1 -d:`
@@ -44,11 +47,12 @@ function check_client()
 
         if [ "$CLIENT_PID" == "" ]; then
                 echo $CLIENT_LOC is not running, starting it as "[" $CLIENT_NAME "]"
-                $CLIENT_NAME >>$TEMP_DIR/$CLIENT_FILE 2>&1 &
+		$CLIENT_NAME >>$TEMP_DIR/$CLIENT_FILE 2>&1 &
                 CLIENT_PID=$!
         fi      
 }
 
+#checks if all clients are up
 #-------------------------------------------------------------------------------
 function check_clients() 
 {
@@ -56,7 +60,7 @@ function check_clients()
 	for (( i=1; i<${arraylength}+1; i++ ));
 	do 
 		check_client "${SYSTEMS[$i-1]}"
-		SYSTEMS[$i-1]="$CLIENT_LOC:CLIENT_FILE:$CLIENT_NAME:$CLIENT_PID"
+		SYSTEMS[$i-1]="$CLIENT_LOC:$CLIENT_FILE:$CLIENT_NAME:$CLIENT_PID"
 	done
 }
 
@@ -74,10 +78,12 @@ function collect_stats()
 			DELAY=`cat $f | grep rtt | awk 'BEGIN { FS="/"} { ret=$4 } END {print ret}'`
 
 			save_stats $SERVER_NAME $SERVER_IP $LOSS $DELAY
+			echo "" > $f
 		fi 
 	done
 }
 
+# reads config and prepares structures
 #-------------------------------------------------------------------------------
 function initialize() 
 {
@@ -95,6 +101,7 @@ function initialize()
 	done
 }
 
+#main
 #-------------------------------------------------------------------------------
 initialize
 while true
