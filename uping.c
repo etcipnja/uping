@@ -185,7 +185,8 @@ void init(int argc, char* argv[])
                 break;
             case 'p':
                 arguments.port=atoi(optarg);
-                break;
+                if (arguments.port<=0 || arguments.port>65534) stop=1;
+		break;
             case 'q':
                 arguments.silent=1;
                 break;
