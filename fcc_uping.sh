@@ -6,7 +6,7 @@ INTERVAL=5
 SERVER_PORT=7
 
 UPING="./uping.x"
-UPING_OPT="-i.05 -q"
+UPING_OPT="-i.05 -s 100 -q"
 TEMP_DIR=/tmp/uping
 
 #customize this function to save stats in zabbix
@@ -78,6 +78,8 @@ function collect_stats()
 			DELAY=`cat $f | grep rtt | awk 'BEGIN { FS="/"} { ret=$4 } END {print ret}'`
 
 			save_stats $SERVER_NAME $SERVER_IP $LOSS $DELAY
+			echo `date` $SERVER_NAME $SERVER_IP >> /tmp/uping.log
+			cat "$f" >> /tmp/uping.log
 			echo "" > $f
 		fi 
 	done
@@ -97,7 +99,7 @@ function initialize()
         for (( i=1; i<${arraylength}+1; i++ ));
         do
 		SITE=(${SITES[$i-1]})		
-		SYSTEMS[$i]="${SITE[0]}:${SITE[3]}@${SITE[1]}:./uping.x ${SITE[1]} -p $SERVER_PORT $UPING_OPT" 
+		SYSTEMS[$i]="${SITE[0]}:${SITE[3]}@${SITE[1]}:${UPING} ${SITE[1]} -p $SERVER_PORT $UPING_OPT" 
 	done
 }
 
