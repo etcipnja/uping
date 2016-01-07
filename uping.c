@@ -111,7 +111,7 @@ void print_stats()
             stats.sent--;
     }
     int worked=(int)(now()-stats.start);
-    printf("\n--- %s:%i uping statsistic ---\n",arguments.host,arguments.port);
+    fprintf(stderr,"\n--- %s:%i uping statsistic ---\n",arguments.host,arguments.port);
     fprintf(stderr,"%i packets transmitted, %i received, %i%% packet loss, time %.1fms\n",
             stats.sent,stats.received,stats.sent!=0?(stats.sent-stats.received)*100/stats.sent:0,worked/10.0);
     fprintf(stderr,"rtt min/avg/max = %.1f/%.1f/%.1f\n\n",stats.min_diff/10.0,
